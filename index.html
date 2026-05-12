@@ -604,6 +604,87 @@ footer {
   to   { transform: translateY(0) rotateX(0); opacity: 1; }
 }
 
+/* ---------- MOBILE POLISH ---------- */
+/* Larger touch targets and gentler animations on hand-held devices */
+.menu-toggle { touch-action: manipulation; }
+.cta-nav, .btn, .icon-btn, .dock-toggle, .stars label,
+form.fancy button[type="submit"] { touch-action: manipulation; }
+
+/* Hamburger to "X" animation */
+.menu-toggle { transition: transform .3s var(--ease); }
+.menu-toggle span { transition: transform .3s var(--ease), opacity .25s var(--ease); transform-origin: center; }
+.menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle.open span:nth-child(2) { opacity: 0; }
+.menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 820px) {
+  /* Tighten vertical rhythm on phones */
+  section { padding: 72px 20px; }
+  .hero { padding: 100px 20px 60px; min-height: 92vh; }
+  h2.section-title { font-size: clamp(28px, 8vw, 44px); }
+  .section-lede { font-size: 15.5px; margin-bottom: 36px; }
+  .eyebrow { font-size: 12px; letter-spacing: 4px; }
+
+  /* Bump touch targets */
+  .icon-btn { width: 44px; height: 44px; border-radius: 14px; }
+  .icon-btn svg { width: 20px; height: 20px; }
+  .nav-links a { padding: 12px 0; font-size: 14px; }
+  .cta-nav { padding: 11px 22px; font-size: 13px; }
+
+  /* Music dock: smaller header + slimmer player when expanded */
+  .music-dock { width: 320px; }
+  .dock-toggle { width: 38px; height: 38px; }
+  .dock-toggle svg { width: 16px; height: 16px; }
+  .dock-body iframe { height: 140px; }
+  .dock-header { padding: 11px 14px; }
+
+  /* Marquee: smaller, less aggressive */
+  .marquee { padding: 16px 0; }
+  .marquee-track { gap: 36px; font-size: 16px; letter-spacing: 3px; animation-duration: 28s; }
+  .marquee-track span { gap: 36px; }
+  .marquee-track span::after { font-size: 9px; }
+
+  /* Hero CTAs: full-width stacked for thumb reach */
+  .hero-ctas { width: 100%; max-width: 320px; }
+  .hero-ctas .btn { flex: 1 1 auto; justify-content: center; padding: 14px 20px; }
+
+  /* About circle: smaller to free space */
+  .about-visual { max-width: 320px; margin: 0 auto; }
+  .about-stats { gap: 12px; }
+  .stat { padding: 16px 10px; }
+  .stat .n { font-size: 24px; }
+  .stat .l { font-size: 10px; }
+
+  /* Logo border softer on small viewports */
+  .logo-stack .row { padding: 0 12px; border-width: 2px; }
+
+  /* Forms tighter */
+  form.fancy { padding: 24px; }
+  form.fancy input, form.fancy textarea, form.fancy select { padding: 14px 14px; font-size: 15px; } /* prevent iOS auto-zoom by keeping ≥16px below */
+  form.fancy textarea { min-height: 100px; }
+
+  /* Footer brand smaller */
+  .foot-brand { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+  section { padding: 60px 18px; }
+  .hero { padding: 92px 18px 56px; }
+  .logo-stack .row { font-size: clamp(48px, 16vw, 110px); letter-spacing: 4px; padding: 0 10px; }
+  .tagline { font-size: 13px; letter-spacing: 3px; }
+  .subtag { font-size: 14px; margin-bottom: 22px; }
+  .scroll-indicator { display: none; }
+
+  /* Reviews + booking columns vertical with smaller gap */
+  .form-wrap { gap: 32px; }
+
+  /* About visual smaller still on phones */
+  .about-visual { max-width: 240px; }
+
+  /* iOS auto-zoom guard — inputs need ≥16px font to not zoom on focus */
+  form.fancy input, form.fancy textarea, form.fancy select { font-size: 16px; }
+}
+
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -620,7 +701,7 @@ footer {
 <!-- =================== NAV =================== -->
 <nav class="top">
   <a href="#top" class="brand">DJ <span>NAVA</span></a>
-  <button class="menu-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+  <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
   <div class="nav-links">
@@ -1086,9 +1167,22 @@ function onScroll() {
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
-/* ===== Smooth-close mobile nav after click ===== */
-document.querySelectorAll('.nav-links a').forEach(a => {
-  a.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('open'));
+/* ===== Mobile nav: hamburger ↔ X, outside-click closes ===== */
+const menuBtn  = document.getElementById('menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+function setMenu(open) {
+  navLinks.classList.toggle('open', open);
+  menuBtn.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+menuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  setMenu(!navLinks.classList.contains('open'));
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('click', e => {
+  if (!menuBtn.contains(e.target) && !navLinks.contains(e.target)) setMenu(false);
 });
 
 /* ===== Cursor glow follower (desktop only) ===== */
@@ -1179,6 +1273,9 @@ let isLive = false;
 /* Collapse / expand the dock (click on header or chevron) */
 header.addEventListener('click', () => dock.classList.toggle('collapsed'));
 toggle.addEventListener('click', e => { e.stopPropagation(); dock.classList.toggle('collapsed'); });
+
+/* On phones the dock starts collapsed so it doesn't cover content. Visitor can tap to expand. */
+if (window.innerWidth <= 640) dock.classList.add('collapsed');
 
 /* Try to use the SoundCloud Widget API. If it's blocked (Brave Shields, ad-blocker),
    that's OK — the visible widget itself still has its own play button which is

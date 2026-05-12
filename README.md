@@ -1,31 +1,25 @@
 # DJ NAVA — Official Site
 
-Single-file site for **DJ NAVA** — multi-cultural DJ, producer & instructor.
-Telugu · Tamil · Bollywood · Punjabi · Hip-Hop / Top 40 · Originals.
+Single-file site for **DJ NAVA**. Telugu · Tamil · Bollywood · Punjabi · Hip-Hop / Top 40 · Originals.
 
-## Deploy to Vercel
-
-Zero config. Either:
-- Drag this folder onto https://vercel.com/new (no git needed), or
-- Push to GitHub and import the repo. Framework: Other. Build/output: empty.
+## Deploy
+- Drag this folder onto https://vercel.com/new, OR
+- Push to GitHub and import the repo (Framework: Other, build/output empty)
 
 ## Contact email
-
 All booking + review form submissions go to **Navaspinz@gmail.com**.
-Change this by searching for `Navaspinz@gmail.com` in `index.html` (3 spots).
+Search `Navaspinz@gmail.com` in `index.html` to change it (3 spots).
 
 ## Want a real backend instead of mailto?
-
-When you're ready, swap mailto → Web3Forms:
 1. https://web3forms.com → enter your email → copy access_key
-2. In `index.html`, find each `<form>` tag and:
-   - Change `action="mailto:..."` to `action="https://api.web3forms.com/submit"`
-   - Delete the `data-mailto` attribute
-   - Add `<input type="hidden" name="access_key" value="YOUR_KEY">` inside the form
+2. In each `<form>`: change `action="mailto:..."` to `action="https://api.web3forms.com/submit"`,
+   delete `data-mailto`, add `<input type="hidden" name="access_key" value="YOUR_KEY">`
 
 ## Features
-- Visible SoundCloud music dock (Robo Baile, autoplay where allowed)
+- Visible SoundCloud music dock (Robo Baile) — auto-collapses on phones
 - Letter-by-letter logo reveal, hero parallax, scroll progress bar
-- Animated stat count-up, 3D mouse-tilt cards, cursor glow
-- Magnetic CTA buttons, marquee genre ticker
-- Booking + star-rated review forms (mailto, working out of the box)
+- Stat count-up, 3D mouse-tilt cards, cursor glow (desktop), magnetic buttons
+- Marquee genre ticker (resized on mobile)
+- Animated hamburger ↔ X menu with outside-click close
+- 44×44 touch targets, iOS no-zoom inputs, full-bleed mobile sections
+- Booking + star-rated review forms (mailto-based)
